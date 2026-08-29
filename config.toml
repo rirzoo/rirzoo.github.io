@@ -1,0 +1,36 @@
+base_url = "https://rirzoo.github.io"
+title = "Romir @TheLanding"
+description = "A running personal record — books, projects, primers, and ramblings."
+default_language = "en"
+theme = "apollo"
+compile_sass = true
+minify_html = true
+build_search_index = false
+generate_feeds = true
+taxonomies = []
+
+[markdown.highlighting]
+style = "class"
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+[extra]
+theme = "dark"
+toc = false
+fancy_code = true
+mathjax = false
+
+menu = [
+    { name = "Marginalia", url = "marginalia", weight = 1 },
+    { name = "Projects", url = "projects", weight = 2 },
+    { name = "Primers", url = "primers", weight = 3 },
+    { name = "Ramblings", url = "ramblings", weight = 4 },
+]
+
+socials = [
+    { name = "github", url = "https://github.com/rirzoo", icon = "github" },
+    { name = "email", url = "mailto:romir_2401ee10@iitp.ac.in", icon = "email" },
+]
+
+[extra.analytics]
+enabled = false
