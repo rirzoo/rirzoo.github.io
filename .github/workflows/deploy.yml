@@ -21,9 +21,6 @@ jobs:
       - uses: getzola/github-pages@v1
         with:
           zola_version: "v0.23.4"
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: ./public
 
   deploy:
     needs: build
