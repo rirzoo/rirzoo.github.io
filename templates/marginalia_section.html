@@ -3,11 +3,11 @@
 {% block post_list %}
 <main class="post-list">
     <ul>
-        {%- for page in section.pages %}
+        {%- for page in section.pages | sort(attribute="description") %}
         <li class="list-item">
             <section>
                 <div class="post-header">
-                    <time>{{ page.date | date(format="%Y-%m-%d") }}</time>
+                    {% if page.date %}<time>{{ page.date | date(format="%Y-%m-%d") }}</time>{% endif %}
                     <div>
                         <h1 class="title">
                             {% if page.extra.reviewed %}
@@ -18,7 +18,7 @@
                         </h1>
                         {% if page.description %}
                         <div class="meta">
-                            <div class="description">{{ page.description }}</div>
+                            <div class="description">{{ page.description }}{% if page.extra.reading %} · reading now{% endif %}</div>
                         </div>
                         {% endif %}
                     </div>
