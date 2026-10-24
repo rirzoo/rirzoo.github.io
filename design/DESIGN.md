@@ -15,25 +15,24 @@ colors:
   ink-faint: "#787878"
   meta: "#999999"
   quote: "#737373"
-  table-rule: "#dfe2e5"
   code-highlight: "#2b3846"
   code-label: "#333333"
 
 typography:
   page-header:
-    fontFamily: ZedTextFtl
+    fontFamily: ZedDisplayFtl
     fontSize: 40px
     fontWeight: 400
     lineHeight: 1.0
     letterSpacing: 0
   heading:
-    fontFamily: ZedTextFtl
+    fontFamily: ZedDisplayFtl
     fontSize: 19.2px
     fontWeight: 700
     lineHeight: 1.5
     letterSpacing: 0
   list-title:
-    fontFamily: ZedTextFtl
+    fontFamily: ZedDisplayFtl
     fontSize: 19.2px
     fontWeight: 400
     lineHeight: 1.5
@@ -153,7 +152,7 @@ components:
     rounded: "{rounded.xs}"
     padding: 10px 20px
   table-cell:
-    borderColor: "{colors.table-rule}"
+    borderColor: "{colors.hairline}"
     padding: 6px 13px
   draft-label:
     backgroundColor: "{colors.primary}"
@@ -212,14 +211,15 @@ Structure comes from type and whitespace alone. Lists are rows of date, title an
 ### Semantic
 There is no success, warning or error palette. A blog doesn't need one. `{colors.code-highlight}` (#2b3846) is the only extra tint, used for highlighted lines in code blocks.
 
-**Known off-palette value:** table borders use `{colors.table-rule}` (#dfe2e5), a light-theme grey that shows up as bright white lines on the dark canvas. If tables start appearing in posts, this is the first thing to override.
+Apollo hard-codes table borders as #dfe2e5, a light-theme grey that shows up as bright white lines on the dark canvas. `static/overrides.css` resets them to `{colors.hairline}`.
 
 ## Typography
 
 ### Font Family
-- **ZedTextFtl** (Zed Text, Regular 400 and Bold 700, woff2): everything that isn't code or a date.
+- **ZedDisplayFtl** (Zed Display Heavy, one 400-registered weight, woff2): page titles, content headings and list titles, through `--header-font`.
+- **ZedTextFtl** (Zed Text, Regular 400 and Bold 700, woff2): body copy, nav, meta lines and everything else that isn't code or a date.
 - **Jetbrains Mono** (Regular 400 and Bold 700 loaded, ttf): dates in lists, inline code, code blocks.
-- **ZedDisplayFtl** (Zed Display Heavy) and **Space Grotesk** are loaded by `fonts.scss` but never actually render. See the note below.
+- **Space Grotesk** is loaded by `fonts.scss` as the second choice in `--header-font`, so it only renders if Zed Display fails to load.
 
 Fonts are served from `themes/apollo/static/fonts/`; `use_cdn` is off.
 
@@ -240,12 +240,12 @@ Fonts are served from `themes/apollo/static/fonts/`; `use_cdn` is off.
 The whole scale shrinks with the viewport: html font size is 97% below 992px, 95% below 768px, 92% below 576px.
 
 ### Principles
-Two sizes do almost all the work: 40px for the page title and 16px for everything else. Content headings are only 1.2rem. They're set apart by weight and the coral `#` prefix, and size barely changes, so a post never gets a wall of big headings. Monospace is kept for things that are literally code or data, meaning code and dates.
+Two sizes do almost all the work: 40px for the page title and 16px for everything else. Content headings are only 1.2rem. They're set apart by the heavy display face and the coral `#` prefix, and size barely changes, so a post never gets a wall of big headings. Monospace is kept for things that are literally code or data, meaning code and dates.
 
 ### Note on Font Substitutes
-`--header-font` in `themes/apollo/sass/main.scss` is written as `"ZedDisplayFtl" "Space Grotesk", "Helvetica", sans-serif`, with a missing comma after the first family. Under the CSS spec that makes the value invalid wherever it's used, so `font-family` falls back to the inherited ZedTextFtl. In practice, headings and page titles render in Zed Text, not Zed Display. The tokens above describe what renders. To get Zed Display Heavy on headings, add the comma in an override; that would be a visible change to every page title.
+`--header-font` in `themes/apollo/sass/main.scss` is written as `"ZedDisplayFtl" "Space Grotesk", "Helvetica", sans-serif`, with a missing comma after the first family. That makes the value invalid, and headings used to fall back to Zed Text. `static/overrides.css` redefines the variable with the comma, so headings now get Zed Display Heavy as the theme intended.
 
-If Zed fonts are unavailable, Inter is a close substitute for Zed Text, and any monospace with similar metrics (Fira Code, IBM Plex Mono) can stand in for Jetbrains Mono.
+If Zed fonts are unavailable, Inter is a close substitute for Zed Text (and Inter Black for Zed Display Heavy), and any monospace with similar metrics (Fira Code, IBM Plex Mono) can stand in for Jetbrains Mono.
 
 ## Layout
 
@@ -365,7 +365,7 @@ No photography is in use yet. Images inherit `{rounded.lg}` and sit inline in th
 **`note`**: `{% note(header="...") %}` shortcode, `themes/apollo/templates/components/note.html`
 - A `{colors.surface-raised}` header row with a coral `✎` icon, over a `{colors.surface}` body. 3px coral left rule, `{rounded.xs}` corners. The `clickable` and `hidden` options turn it into a collapsible with a `▼` marker, but that needs `dynamic_note = true` in config, which is currently off.
 
-**`table-cell`**: 6px by 13px padding, 1px `{colors.table-rule}` borders, `th` at `font-size: large`. See the off-palette note under Colors.
+**`table-cell`**: 6px by 13px padding, 1px `{colors.hairline}` borders (set in `static/overrides.css`), `th` at `font-size: large`.
 
 ### Signature Components
 
@@ -385,9 +385,10 @@ No photography is in use yet. Images inherit `{rounded.lg}` and sit inline in th
 | Colour tokens | `themes/apollo/sass/theme/dark.scss` |
 | Fonts, page width, layout | `themes/apollo/sass/main.scss`, `fonts.scss` |
 | Component styles | `themes/apollo/sass/parts/_*.scss` |
+| Site overrides of theme styles | `static/overrides.css` |
 | Fonts and icons | `themes/apollo/static/fonts/`, `themes/apollo/static/icons/` |
 
-To change a token, override it rather than editing the theme. Add a stylesheet under `static/` and list it in `config.toml` under `extra.stylesheets`. It loads after `main.css`, so a `:root.dark { --primary-color: … }` block there wins.
+To change a token, override it rather than editing the theme. Put the rule in `static/overrides.css`, which `config.toml` lists under `extra.stylesheets`. It loads after `main.css`, so a `:root.dark { --primary-color: … }` block there wins.
 
 ## Do's and Don'ts
 

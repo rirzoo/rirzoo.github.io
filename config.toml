@@ -19,6 +19,7 @@ theme = "dark"
 toc = false
 fancy_code = true
 mathjax = false
+stylesheets = ["overrides.css"]
 
 menu = [
     { name = "Marginalia", url = "marginalia", weight = 1 },

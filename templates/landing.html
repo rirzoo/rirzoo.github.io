@@ -10,20 +10,24 @@
 </main>
 
 {% set marginalia = get_section(path="marginalia/_index.md") %}
+{% set_global reviewed = 0 %}
+{% for page in marginalia.pages %}{% if page.extra.reviewed %}{% set_global reviewed = reviewed + 1 %}{% endif %}{% endfor %}
 {% set projects = get_section(path="projects/_index.md") %}
 {% set primers = get_section(path="primers/_index.md") %}
 {% set ramblings = get_section(path="ramblings/_index.md") %}
 
-{% if marginalia.pages or projects.pages or primers.pages or ramblings.pages %}
+{% if reviewed or projects.pages or primers.pages or ramblings.pages %}
 <div class="page-header">Latest</div>
 <main class="post-list">
     <ul>
+        {%- set_global shown = 0 %}
         {%- for page in marginalia.pages %}
-            {%- if loop.index <= 2 and page.extra.reviewed %}
+            {%- if page.extra.reviewed and shown < 2 %}
+            {%- set_global shown = shown + 1 %}
             <li class="list-item">
                 <section>
                     <div class="post-header">
-                        <time>{{ page.date | date(format="%Y-%m-%d") }}</time>
+                        {% if page.date %}<time>{{ page.date | date(format="%Y-%m-%d") }}</time>{% endif %}
                         <div>
                             <h1 class="title"><a href="{{ page.permalink | safe }}">Marginalia — {{ page.title }}</a></h1>
                             {% if page.description %}<div class="meta"><div class="description">{{ page.description }}</div></div>{% endif %}

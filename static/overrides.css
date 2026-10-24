@@ -1,0 +1,12 @@
+/* Fixes for themes/apollo, loaded after main.css via extra.stylesheets. */
+
+/* Apollo's --header-font is missing a comma, which voids it and drops headings to the text font. */
+:root {
+  --header-font: "ZedDisplayFtl", "Space Grotesk", "Helvetica", sans-serif;
+}
+
+/* Apollo hard-codes a light-theme grey here. */
+table th,
+table td {
+  border-color: var(--border-color);
+}
